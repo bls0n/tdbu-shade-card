@@ -221,13 +221,18 @@ If aiopulse2 is updated via HACS, the patches to `devices.py` will be overwritte
 
 ---
 
-## Contributing
-
-If you have a Rollease Acmeda TDBU shade and can test or improve this integration, pull requests are welcome. The key discovery — `movePercent1`/`movePercent2` for dual rail control — should ideally be submitted upstream to the [aiopulse2](https://github.com/sillyfrog/aiopulse2) library as a proper feature addition.
-
----
-
 ## Credits
 
-- [sillyfrog](https://github.com/sillyfrog) for the Automate Pulse Hub v2 integration and aiopulse2 library
-- Rollease Acmeda API discovery through packet analysis of the Pulse v2 WebSocket protocol
+- [sillyfrog/aiopulse2](https://github.com/sillyfrog/aiopulse2) — the 
+  underlying library this depends on
+- [sillyfrog/Automate-Pulse-v2](https://github.com/sillyfrog/Automate-Pulse-v2) — 
+  the custom HA integration required for this card
+- Rollease Acmeda Pulse v2 API discovery — `movePercent1`/`movePercent2` 
+  dual rail commands discovered through WebSocket analysis
+
+## Related
+
+- [HA community thread](https://community.home-assistant.io/t/top-down-bottom-up-rollease-acmeda-shades-from-budget-blinds/564774) — 
+  original discussion that inspired this work
+- [aiopulse2 issue #18](https://github.com/sillyfrog/aiopulse2/issues/18) — 
+  upstream bug report and feature request
