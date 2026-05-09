@@ -42,7 +42,7 @@ class TdbuShadeCard extends HTMLElement {
 
     this._topPos = (100 - haTop) / 100;
     this._btmPos = (100 - haBtm) / 100;
-    this._updateVisuals();
+    this._scheduleVisualUpdate();
   }
 
   _haPositionFromPos(pos) {
@@ -62,6 +62,10 @@ class TdbuShadeCard extends HTMLElement {
   _clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
   _getY(e) { return e.touches ? e.touches[0].clientY : e.clientY; }
+
+  _scheduleVisualUpdate() {
+    requestAnimationFrame(() => this._updateVisuals());
+  }
 
   _render() {
     const presetButtons = (this._config.presets || [])
@@ -264,12 +268,11 @@ class TdbuShadeCard extends HTMLElement {
 
     this._rendered = true;
     this._bindEvents();
-    this._updateVisuals();
+    requestAnimationFrame(() => this._updateVisuals());
   }
 
   _bindEvents() {
     const RAIL_H = 10;
-    const PAD = 24;
     const MIN_GAP = 0.04;
 
     const win = this.shadowRoot.getElementById('window');
@@ -294,6 +297,7 @@ class TdbuShadeCard extends HTMLElement {
     const onMove = (e) => {
       if (!this._drag) return;
       const h = win.offsetHeight;
+      if (!h) return;
       const d = (this._getY(e) - this._startY) / h;
       if (this._drag === 'top') {
         this._topPos = this._clamp(this._startPos + d, 0, this._btmPos - MIN_GAP);
@@ -335,7 +339,10 @@ class TdbuShadeCard extends HTMLElement {
     if (!this._rendered) return;
     const win = this.shadowRoot.getElementById('window');
     const h = win.offsetHeight;
-    if (!h) return;
+    if (!h) {
+      requestAnimationFrame(() => this._updateVisuals());
+      return;
+    }
 
     const RAIL_H = 10;
     const PAD = 24;
