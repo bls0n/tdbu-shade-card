@@ -1,3 +1,7 @@
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=bls0n&repository=tdbu-shade-card&category=frontend)
+
 # TDBU Shade Card
 
 A custom Home Assistant Lovelace card for controlling **Top Down Bottom Up (TDBU)** motorized shades, specifically designed for **Rollease Acmeda Pulse v2** hubs (sold under the Budget Blinds "Smart Home Collection" and Automate brands).
