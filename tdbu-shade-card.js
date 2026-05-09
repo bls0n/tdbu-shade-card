@@ -18,8 +18,8 @@ class TdbuShadeCard extends HTMLElement {
     }
     this._config = {
       name: config.name || 'Shade',
-      entity_top: config.entity_top,
-      entity_bottom: config.entity_bottom,
+      entity_top: Array.isArray(config.entity_top) ? config.entity_top : [config.entity_top],
+      entity_bottom: Array.isArray(config.entity_bottom) ? config.entity_bottom : [config.entity_bottom],
       presets: config.presets || [
         { name: 'wake', top: 0, bottom: 0 },
         { name: 'sleep', top: 0, bottom: 100 },
@@ -33,8 +33,8 @@ class TdbuShadeCard extends HTMLElement {
     if (!this._rendered) return;
     if (this._drag) return;
 
-    const stTop = hass.states[this._config.entity_top];
-    const stBtm = hass.states[this._config.entity_bottom];
+    const stTop = hass.states[this._config.entity_top[0]];
+    const stBtm = hass.states[this._config.entity_bottom[0]];
     if (!stTop || !stBtm) return;
 
     const haTop = parseFloat(stTop.attributes.current_position ?? 100);
@@ -49,11 +49,13 @@ class TdbuShadeCard extends HTMLElement {
     return Math.round((1 - pos) * 100);
   }
 
-  _callService(entityId, haPosition) {
+  _callService(entityIds, haPosition) {
     if (!this._hass) return;
-    this._hass.callService('cover', 'set_cover_position', {
-      entity_id: entityId,
-      position: haPosition,
+    entityIds.forEach(entityId => {
+      this._hass.callService('cover', 'set_cover_position', {
+        entity_id: entityId,
+        position: haPosition,
+      });
     });
   }
 
@@ -65,6 +67,12 @@ class TdbuShadeCard extends HTMLElement {
     const presetButtons = (this._config.presets || [])
       .map(p => `<button class="preset-btn" data-top="${p.top}" data-btm="${p.bottom}">${p.name}</button>`)
       .join('');
+
+    const entityCount = Math.max(
+      this._config.entity_top.length,
+      this._config.entity_bottom.length
+    );
+    const subtitle = entityCount > 1 ? `<span class="subtitle">${entityCount} shades</span>` : '';
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -85,10 +93,19 @@ class TdbuShadeCard extends HTMLElement {
           align-items: center;
           margin-bottom: 12px;
         }
+        .header-left {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
         .name {
           font-size: 15px;
           font-weight: 500;
           color: var(--primary-text-color, #212121);
+        }
+        .subtitle {
+          font-size: 11px;
+          color: var(--secondary-text-color, #757575);
         }
         .status {
           font-size: 12px;
@@ -204,7 +221,10 @@ class TdbuShadeCard extends HTMLElement {
       <ha-card>
         <div class="card">
           <div class="header">
-            <span class="name">${this._config.name}</span>
+            <div class="header-left">
+              <span class="name">${this._config.name}</span>
+              ${subtitle}
+            </div>
             <span class="status" id="status">open</span>
           </div>
           <div class="body">
@@ -385,6 +405,6 @@ window.customCards = window.customCards || [];
 window.customCards.push({
   type: 'tdbu-shade-card',
   name: 'TDBU Shade Card',
-  description: 'Interactive top-down bottom-up shade control card with draggable rails',
+  description: 'Interactive top-down bottom-up shade control card with draggable rails. Supports single or multiple shades per card.',
   preview: true,
 });
