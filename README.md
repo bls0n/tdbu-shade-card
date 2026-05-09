@@ -75,6 +75,7 @@ presets:
 | `entity_bottom` | string or list | Yes | Cover entity for the bottom rail |
 | `presets` | list | No | Scene preset buttons |
 
+
 ### Controlling Multiple Shades Together
 
 Pass a list of entities to control multiple shades from one card:
