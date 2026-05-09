@@ -1,0 +1,6 @@
+{
+  "name": "TDBU Shade Card",
+  "description": "Interactive top-down bottom-up shade control card for Rollease Acmeda shades",
+  "render_readme": true,
+  "homeassistant": "2023.0.0"
+}
